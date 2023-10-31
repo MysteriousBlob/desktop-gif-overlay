@@ -8,5 +8,5 @@ If this doesn't work, then I dunno ¯\\\_(ツ)\_/¯
 
 <hr>
 
-In order to close the app press the `' ] '` key. 
+In order to close the app press the `' ] '` key. <br>
 In order to change the gif press the `" ' "` key.
