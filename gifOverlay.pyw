@@ -27,6 +27,8 @@ class configWindow(tk.Toplevel):
         self.rowconfigure(2, weight=1)
         self.rowconfigure(3, weight=1)
 
+        self.bind("]", lambda event: self.master.destroy())
+
     def place_widgets(self):
         self.width_label = tk.Label(self, text="Width:")
         self.width_label.grid(row=0, column=0, ipady=3)
@@ -58,10 +60,8 @@ class configWindow(tk.Toplevel):
     def select_path(self):
         self.master.gif_path.set(filedialog.askopenfilename())
 
-class gifOverlay(tk.Tk):
+class IgifOverlay():
     def __init__(self):
-        tk.Tk.__init__(self)
-
         self.title("Gif Viewer")
         self.geometry("400x400-0-0")
         self.wm_attributes("-topmost", True)
@@ -159,7 +159,7 @@ class gifOverlay(tk.Tk):
 
     def Display(self):
         self.display_gif()
-    
+
     def moveGif(self):
         x = self.winfo_pointerx()
         y = self.winfo_pointery()
@@ -167,6 +167,28 @@ class gifOverlay(tk.Tk):
         geo = self.winfo_geometry().replace("+", "x").split("x")
         self.geometry(f"{geo[0]}x{geo[1]}+{x-int(geo[0])//2}+{y-int(geo[1])//2}")
 
-app = gifOverlay()
+class gifOverlayMaster(tk.Tk, IgifOverlay):
+    def __init__(self):
+        tk.Tk.__init__(self)
+        IgifOverlay.__init__(self)
+
+        self.subWindows = []
+        self.bind_all("\\", lambda event: self.create_subwindow())
+        self.bind_all("r", lambda event: self.reset_frames())
+
+    def create_subwindow(self):
+        self.subWindows.append(gifOverlayChild(self))
+    
+    def reset_frames(self):
+        self.current_frame = 0
+        for i in self.subWindows:
+            i.current_frame = 0
+
+class gifOverlayChild(tk.Toplevel, IgifOverlay):
+    def __init__(self, master):
+        tk.Toplevel.__init__(self, master)
+        IgifOverlay.__init__(self)
+
+app = gifOverlayMaster()
 
 app.mainloop()
