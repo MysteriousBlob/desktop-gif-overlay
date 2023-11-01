@@ -146,7 +146,7 @@ class IgifOverlay():
         if self.width == 0 or self.height == 0:
             self.images = tuple([tk.PhotoImage(file=self.filepath, format=f"gif -index {i}") for i in range(self.frames)])
         else:
-            self.images = tuple([ImageTk.PhotoImage(Image_Seek(self.gif, i).resize((self.width, self.height))) for i in range(self.frames)])
+            self.images = tuple([ImageTk.PhotoImage(Image_Seek(self.gif, i).resize((self.width, self.height), Image.Resampling.NEAREST)) for i in range(self.frames)])
     
     def Submit(self):
         if self.gif_width.get() >= 0:
