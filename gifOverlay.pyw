@@ -78,6 +78,7 @@ class IgifOverlay():
         self.cycle_working = False
         self.width = 0
         self.height = 0
+        self.current_frame = 1
         self.filepath = ""
         self.gif_width = tk.IntVar()
         self.gif_height = tk.IntVar()
@@ -142,9 +143,8 @@ class IgifOverlay():
         self.gif = Image.open(self.filepath)
         self.frames = self.gif.n_frames
         self.frame_delay = self.gif.info['duration']
-        self.current_frame = 1
         if self.width == 0 or self.height == 0:
-            self.images = tuple([tk.PhotoImage(file=self.filepath, format=f"gif -index {i}") for i in range(self.frames)])
+            self.images = tuple([ImageTk.PhotoImage(Image_Seek(self.gif, i).resize((self.gif.width, self.gif.height), Image.Resampling.NEAREST)) for i in range(self.frames)])
         else:
             self.images = tuple([ImageTk.PhotoImage(Image_Seek(self.gif, i).resize((self.width, self.height), Image.Resampling.NEAREST)) for i in range(self.frames)])
     
@@ -176,19 +176,22 @@ class gifOverlayMaster(tk.Tk, IgifOverlay):
         self.bind_all("\\", lambda event: self.create_subwindow())
         self.bind_all("r", lambda event: self.reset_frames())
 
+        self.current_frame = 1
+
     def create_subwindow(self):
         self.subWindows.append(gifOverlayChild(self))
     
     def reset_frames(self):
         self.current_frame = 0
-        for i in self.subWindows:
-            i.current_frame = 0
+
+        for window in self.subWindows:
+            window.current_frame = 0
 
 class gifOverlayChild(tk.Toplevel, IgifOverlay):
     def __init__(self, master):
         tk.Toplevel.__init__(self, master)
         IgifOverlay.__init__(self)
 
-app = gifOverlayMaster()
-
-app.mainloop()
+if __name__ == "__main__":
+    app = gifOverlayMaster()
+    app.mainloop()
