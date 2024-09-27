@@ -13,4 +13,4 @@ If this doesn't work, then I dunno ¯\\\_(ツ)\_/¯
 | `]` |   close the app    |
 | `'` |   change the gif   |
 | `\` |  open a new window |
-| `r` |  restart all gifs  |
+| `r` |   reset all gifs   |
